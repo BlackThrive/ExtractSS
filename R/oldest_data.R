@@ -1,4 +1,11 @@
-# get oldest date live
+
+#' Retrieve oldest date for which data in API are available
+#'
+#'
+#' @return A string describing date in yyyy-mm format
+#' @export
+#'
+#'
 oldest_data <- function(){
   oldest <- httr::GET("https://data.police.uk/api/crimes-street-dates")
   k <- httr::content(oldest)
