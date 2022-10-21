@@ -133,110 +133,139 @@ analyse_records <- function(data_file,
   data_subset$la_name[which(data_subset$la_name == "Rhondda Cynon Taf")] <- "Rhondda Cynon Taff"
   data_subset$region[which(data_subset$region == "Yorkshire and The Humber")] <- "Yorkshire and the Humber"
 
-  las <- unique(data_subset$la_name) # get la names from the dataset
-  all_results <- data.frame() # initialise
-  all_mats <- matrix(data = c(0,0,0,0), ncol = 2, nrow = 2)
-  all_dfs <- data.frame()
-  count <- 0
+  if(geography == "la"){
 
-  # regional fork would be here
+    las <- unique(data_subset$la_name) # get la names from the dataset
+    all_results <- data.frame() # initialise
+    all_mats <- matrix(data = c(0,0,0,0), ncol = 2, nrow = 2)
+    all_dfs <- data.frame()
+    count <- 0
 
-  for(i in 1:length(las)){
-    results_df <- data.frame() # initialise
+    # regional fork would be here
 
-    # get data for la
-    la <- unique(data_subset[which(data_subset$la_name == las[i]), "la_name"])
-    county <- unique(data_subset[which(data_subset$la_name == las[i]), "county"])
-    region <- unique(data_subset[which(data_subset$la_name == las[i]), "region"])
-    country <- unique(data_subset[which(data_subset$la_name == las[i]), "country"])
-    force <- unique(data_subset[which(data_subset$la_name == las[i]), "force"])
+    for(i in 1:length(las)){
+      results_df <- data.frame() # initialise
 
-    for(j in 1:length(dates)){
-      if(date == "by_year"){
-        this_date <- dates[j]
-        temp_df <- data_subset %>% # subset to la
-          subset(., la_name == la & year == this_date)
-      }
-      else if(date == "by_month"){
-        this_date <- dates[j]
-        temp_df <- data_subset %>% # subset to la
-          subset(., la_name == la & year_month == this_date)
-      }
-      else if(date == "12_month_periods"){
-        this_date <- dates[[j]]
-        temp_df <- data_subset %>% # subset to la
-          subset(., la_name == la & year_month >= this_date[1] & year_month <= this_date[2])
-        # rename this date for variable name later
-        this_date <- paste0("12 months to ", substr(dates[[j]][2], 1, 7))
-      }
+      # get data for la
+      la <- unique(data_subset[which(data_subset$la_name == las[i]), "la_name"])
+      county <- unique(data_subset[which(data_subset$la_name == las[i]), "county"])
+      region <- unique(data_subset[which(data_subset$la_name == las[i]), "region"])
+      country <- unique(data_subset[which(data_subset$la_name == las[i]), "country"])
+      force <- unique(data_subset[which(data_subset$la_name == las[i]), "force"])
 
-      if(length(unique(temp_df$ethnicity)) == 2){ # &
-        # !is.na(population_ests[which(population_ests$LAD == la), ethnicity_1]) &
-        # !is.na(population_ests[which(population_ests$LAD == la), ethnicity_2])){ # check that there are stops for both white and black individuals
+      for(j in 1:length(dates)){
+        if(date == "by_year"){
+          this_date <- dates[j]
+          temp_df <- data_subset %>% # subset to la
+            subset(., la_name == la & year == this_date)
+        }
+        else if(date == "by_month"){
+          this_date <- dates[j]
+          temp_df <- data_subset %>% # subset to la
+            subset(., la_name == la & year_month == this_date)
+        }
+        else if(date == "12_month_periods"){
+          this_date <- dates[[j]]
+          temp_df <- data_subset %>% # subset to la
+            subset(., la_name == la & year_month >= this_date[1] & year_month <= this_date[2])
+          # rename this date for variable name later
+          this_date <- paste0("12 months to ", substr(dates[[j]][2], 1, 7))
+        }
 
-        # collect stats
-        temp_df <- temp_df %>%
-          dplyr::group_by(ethnicity) %>%
-          dplyr::summarise(
-            stopped = dplyr::n()
-          ) %>%
-          dplyr::mutate(
-            pop = c(as.numeric(population_ests[which(population_ests$LAD == la), "White"]),
-                    as.numeric(population_ests[which(population_ests$LAD == la), "Black"])),
-            percentage = 100 * (stopped/pop),
-            not_stopped = pop - stopped
-          ) %>%
-          as.data.frame()
+        if(length(unique(temp_df$ethnicity)) == 2){ # &
+          # !is.na(population_ests[which(population_ests$LAD == la), ethnicity_1]) &
+          # !is.na(population_ests[which(population_ests$LAD == la), ethnicity_2])){ # check that there are stops for both white and black individuals
 
-        row.names(temp_df) <- temp_df$ethnicity
+          # collect stats
+          temp_df <- temp_df %>%
+            dplyr::group_by(ethnicity) %>%
+            dplyr::summarise(
+              stopped = dplyr::n()
+            ) %>%
+            dplyr::mutate(
+              pop = c(as.numeric(population_ests[which(population_ests$LAD == la), "White"]),
+                      as.numeric(population_ests[which(population_ests$LAD == la), "Black"])),
+              percentage = 100 * (stopped/pop),
+              not_stopped = pop - stopped
+            ) %>%
+            as.data.frame()
 
-        black <- data.frame("Black" = c("stopped" = temp_df["Black", "stopped"], "not_stopped" = temp_df["Black", "not_stopped"]))
+          row.names(temp_df) <- temp_df$ethnicity
 
-        white <- data.frame("White" = c("stopped" = temp_df["White", "stopped"], "not_stopped" = temp_df["White", "not_stopped"]))
+          black <- data.frame("Black" = c("stopped" = temp_df["Black", "stopped"], "not_stopped" = temp_df["Black", "not_stopped"]))
 
-        bw_mat <- as.matrix(cbind(black, white)) # matrix for crosstable
-        bw_df <- as.data.frame(bw_mat) # df for custom rr function
+          white <- data.frame("White" = c("stopped" = temp_df["White", "stopped"], "not_stopped" = temp_df["White", "not_stopped"]))
+
+          bw_mat <- as.matrix(cbind(black, white)) # matrix for crosstable
+          bw_df <- as.data.frame(bw_mat) # df for custom rr function
 
 
-        if(sum(is.na(bw_mat)) == 0){ # if there are figures for all cells, run stats
-          # use tryCatch to collect warning messages
-          xtab <- tryCatch(gmodels::CrossTable(bw_mat, chisq = T, fisher = T, expected = T),
-                           warning = function(w) return(list(gmodels::CrossTable(bw_mat, chisq = T, fisher = T, expected = T), w)))
-          rr <- riskratio_from_df(bw_df, "Stop & Search")
-          results_df <- data.frame(
-            "date" = this_date,
-            "la" = la,
-            "county" = county,
-            "region" = region,
-            "country" = country,
-            "force" = force,
-            "black_stopped" = temp_df["Black", "stopped"],
-            "black_not_stopped" = temp_df["Black", "not_stopped"],
-            "black_population" = temp_df["Black", "pop"],
-            "black_stop_rate" = temp_df["Black", "percentage"],
-            "white_stopped" = temp_df["White", "stopped"],
-            "white_not_stopped" = temp_df["White", "not_stopped"],
-            "white_population" = temp_df["White", "pop"],
-            "white_stop_rate" = temp_df["White", "percentage"],
-            "or" = ifelse(is.list(xtab[[1]]),
-                          xtab[[1]][["fisher.ts"]][["estimate"]][["odds ratio"]],
-                          xtab[["fisher.ts"]][["estimate"]][["odds ratio"]]),
-            "or_ci_low" = ifelse(is.list(xtab[[1]]),
-                                 xtab[[1]][["fisher.ts"]][["conf.int"]][1],
-                                 xtab[["fisher.ts"]][["conf.int"]][1]),
-            "or_ci_upp" = ifelse(is.list(xtab[[1]]),
-                                 xtab[[1]][["fisher.ts"]][["conf.int"]][2],
-                                 xtab[["fisher.ts"]][["conf.int"]][2]),
-            "rr" = rr$rr,
-            "rr_ci_low" = rr$ci_low,
-            "rr_ci_upp" = rr$ci_upp,
-            "warning" = ifelse(is.list(xtab[[1]]), xtab[[2]][["message"]], NA))
+          if(sum(is.na(bw_mat)) == 0){ # if there are figures for all cells, run stats
+            # use tryCatch to collect warning messages
+            xtab <- tryCatch(gmodels::CrossTable(bw_mat, chisq = T, fisher = T, expected = T),
+                             warning = function(w) return(list(gmodels::CrossTable(bw_mat, chisq = T, fisher = T, expected = T), w)))
+            rr <- riskratio_from_df(bw_df, "Stop & Search")
+            results_df <- data.frame(
+              "date" = this_date,
+              "la" = la,
+              "county" = county,
+              "region" = region,
+              "country" = country,
+              "force" = force,
+              "black_stopped" = temp_df["Black", "stopped"],
+              "black_not_stopped" = temp_df["Black", "not_stopped"],
+              "black_population" = temp_df["Black", "pop"],
+              "black_stop_rate" = temp_df["Black", "percentage"],
+              "white_stopped" = temp_df["White", "stopped"],
+              "white_not_stopped" = temp_df["White", "not_stopped"],
+              "white_population" = temp_df["White", "pop"],
+              "white_stop_rate" = temp_df["White", "percentage"],
+              "or" = ifelse(is.list(xtab[[1]]),
+                            xtab[[1]][["fisher.ts"]][["estimate"]][["odds ratio"]],
+                            xtab[["fisher.ts"]][["estimate"]][["odds ratio"]]),
+              "or_ci_low" = ifelse(is.list(xtab[[1]]),
+                                   xtab[[1]][["fisher.ts"]][["conf.int"]][1],
+                                   xtab[["fisher.ts"]][["conf.int"]][1]),
+              "or_ci_upp" = ifelse(is.list(xtab[[1]]),
+                                   xtab[[1]][["fisher.ts"]][["conf.int"]][2],
+                                   xtab[["fisher.ts"]][["conf.int"]][2]),
+              "rr" = rr$rr,
+              "rr_ci_low" = rr$ci_low,
+              "rr_ci_upp" = rr$ci_upp,
+              "warning" = ifelse(is.list(xtab[[1]]), xtab[[2]][["message"]], NA))
 
-          all_mats <- all_mats + bw_mat
-          count <- count + 1 # increase count of areas for which stats have been acquired
+            all_mats <- all_mats + bw_mat
+            count <- count + 1 # increase count of areas for which stats have been acquired
+
+          }
+          else{ # if there are missing values, don't run stats but still add frequency data
+            results_df <- data.frame(
+              "date" = this_date,
+              "la" = la,
+              "county" = county,
+              "region" = region,
+              "country" = country,
+              "force" = force,
+              "black_stopped" = temp_df["Black", "stopped"],
+              "black_not_stopped" = temp_df["Black", "not_stopped"],
+              "black_population" = temp_df["Black", "pop"],
+              "black_stop_rate" = temp_df["Black", "percentage"],
+              "white_stopped" = temp_df["White", "stopped"],
+              "white_not_stopped" = temp_df["White", "not_stopped"],
+              "white_population" = temp_df["White", "pop"],
+              "white_stop_rate" = temp_df["White", "percentage"],
+              "or" = NA,
+              "or_ci_low" = NA,
+              "or_ci_upp" = NA,
+              "rr" = NA,
+              "rr_ci_low" = NA,
+              "rr_ci_upp" = NA,
+              "warning" = NA)
+          }
 
         }
-        else{ # if there are missing values, don't run stats but still add frequency data
+        # if there is not data for both black and white, and/or there are missing values
+        else{
           results_df <- data.frame(
             "date" = this_date,
             "la" = la,
@@ -244,14 +273,14 @@ analyse_records <- function(data_file,
             "region" = region,
             "country" = country,
             "force" = force,
-            "black_stopped" = temp_df["Black", "stopped"],
-            "black_not_stopped" = temp_df["Black", "not_stopped"],
-            "black_population" = temp_df["Black", "pop"],
-            "black_stop_rate" = temp_df["Black", "percentage"],
-            "white_stopped" = temp_df["White", "stopped"],
-            "white_not_stopped" = temp_df["White", "not_stopped"],
-            "white_population" = temp_df["White", "pop"],
-            "white_stop_rate" = temp_df["White", "percentage"],
+            "black_stopped" = NA,
+            "black_not_stopped" = NA,
+            "black_population" = NA,
+            "black_stop_rate" = NA,
+            "white_stopped" = NA,
+            "white_not_stopped" = NA,
+            "white_population" = NA,
+            "white_stop_rate" = NA,
             "or" = NA,
             "or_ci_low" = NA,
             "or_ci_upp" = NA,
@@ -261,38 +290,174 @@ analyse_records <- function(data_file,
             "warning" = NA)
         }
 
+
+        all_results <- rbind(all_results, results_df) # add results to all results
+        all_dfs <- as.data.frame(all_mats)
+        cat("\014")
+        print(paste0(i, " of ", length(las), " complete (", round(100 * (i / length(las)),2 ), "%)"))
       }
-      # if there is not data for both black and white, and/or there are missing values
-      else{
-        results_df <- data.frame(
-          "date" = this_date,
-          "la" = la,
-          "county" = county,
-          "region" = region,
-          "country" = country,
-          "force" = force,
-          "black_stopped" = NA,
-          "black_not_stopped" = NA,
-          "black_population" = NA,
-          "black_stop_rate" = NA,
-          "white_stopped" = NA,
-          "white_not_stopped" = NA,
-          "white_population" = NA,
-          "white_stop_rate" = NA,
-          "or" = NA,
-          "or_ci_low" = NA,
-          "or_ci_upp" = NA,
-          "rr" = NA,
-          "rr_ci_low" = NA,
-          "rr_ci_upp" = NA,
-          "warning" = NA)
-      }
+    }
+  }
+  else if(geography == "region"){
+
+    regions <- unique(subset_df$region) # get la names from the dataset
+    all_results <- data.frame() # initialise
+    all_mats <- matrix(data = c(0,0,0,0), ncol = 2, nrow = 2)
+    all_dfs <- data.frame()
+    count <- 0
 
 
-      all_results <- rbind(all_results, results_df) # add results to all results
-      all_dfs <- as.data.frame(all_mats)
-      cat("\014")
-      print(paste0(i, " of ", length(las), " complete (", round(100 * (i / length(las)),2 ), "%)"))
+    for(i in 1:length(regions)){
+      results_df <- data.frame() # initialise
+
+      # get data for la
+      #la <- unique(subset_df[which(subset_df$la_name == las[i]), "la_name"])
+      #county <- unique(subset_df[which(subset_df$la_name == las[i]), "county"])
+      this_region <- unique(subset_df[which(subset_df$region == regions[i]), "region"]) # need to use different name to that in subset_df
+      country <- unique(subset_df[which(subset_df$region == regions[i]), "country"])
+      #force <- unique(subset_df[which(subset_df$region == regions[i]), "force"])
+
+      for(j in 1:length(dates)){
+        if(date == "by_year"){
+          this_date <- dates[j]
+          temp_df <- data_subset %>% # subset to la
+            subset(., region == this_region & year == this_date)
+        }
+        else if(date == "by_month"){
+          this_date <- dates[j]
+          temp_df <- data_subset %>% # subset to la
+            subset(., region == this_region & year_month == this_date)
+        }
+        else if(date == "12_month_periods"){
+          this_date <- dates[[j]]
+          temp_df <- data_subset %>% # subset to la
+            subset(., region == this_region & year_month >= this_date[1] & year_month <= this_date[2])
+          # rename this date for variable name later
+          this_date <- paste0("12 months to ", substr(dates[[j]][2], 1, 7))
+        }
+
+        if(length(unique(temp_df$ethnicity)) == 2){ # check that there are stops for both white and black individuals
+
+          # collect stats
+          temp_df <- temp_df %>%
+            dplyr::group_by(ethnicity) %>%
+            dplyr::summarise(
+              stopped = n()
+            ) %>%
+            dplyr::mutate(
+              pop = c(as.numeric(population_ests[which(population_ests$Region == this_region), "White"]),
+                      as.numeric(population_ests[which(population_ests$Region == this_region), "Black"])),
+              percentage = 100 * (stopped/pop),
+              not_stopped = pop - stopped
+            ) %>%
+            as.data.frame()
+
+          row.names(temp_df) <- temp_df$ethnicity
+
+          black <- data.frame("Black" = c("stopped" = temp_df["Black", "stopped"], "not_stopped" = temp_df["Black", "not_stopped"]))
+
+          white <- data.frame("White" = c("stopped" = temp_df["White", "stopped"], "not_stopped" = temp_df["White", "not_stopped"]))
+
+          bw_mat <- as.matrix(cbind(black, white)) # matrix for crosstable
+          bw_df <- as.data.frame(bw_mat) # df for custom rr function
+
+
+          if(sum(is.na(bw_mat)) == 0){ # if there are figures for all cells, run stats
+            # use tryCatch to collect warning messages
+            xtab <- tryCatch(gmodels::CrossTable(bw_mat, chisq = T, fisher = T, expected = T),
+                             warning = function(w) return(list(gmodels::CrossTable(bw_mat, chisq = T, fisher = T, expected = T), w)))
+            rr <- riskratio_from_df(bw_df, "Stop & Search")
+            results_df <- data.frame(
+              # "la" = la,
+              # "county" = county,
+              "date" = this_date,
+              "region" = this_region,
+              "country" = country,
+              #"force" = force,
+              "black_stopped" = temp_df["Black", "stopped"],
+              "black_not_stopped" = temp_df["Black", "not_stopped"],
+              "black_population" = temp_df["Black", "pop"],
+              "black_stop_rate" = temp_df["Black", "percentage"],
+              "white_stopped" = temp_df["White", "stopped"],
+              "white_not_stopped" = temp_df["White", "not_stopped"],
+              "white_population" = temp_df["White", "pop"],
+              "white_stop_rate" = temp_df["White", "percentage"],
+              "or" = ifelse(is.list(xtab[[1]]),
+                            xtab[[1]][["fisher.ts"]][["estimate"]][["odds ratio"]],
+                            xtab[["fisher.ts"]][["estimate"]][["odds ratio"]]),
+              "or_ci_low" = ifelse(is.list(xtab[[1]]),
+                                   xtab[[1]][["fisher.ts"]][["conf.int"]][1],
+                                   xtab[["fisher.ts"]][["conf.int"]][1]),
+              "or_ci_upp" = ifelse(is.list(xtab[[1]]),
+                                   xtab[[1]][["fisher.ts"]][["conf.int"]][2],
+                                   xtab[["fisher.ts"]][["conf.int"]][2]),
+              "rr" = rr$rr,
+              "rr_ci_low" = rr$ci_low,
+              "rr_ci_upp" = rr$ci_upp,
+              "warning" = ifelse(is.list(xtab[[1]]), xtab[[2]][["message"]], NA))
+
+            all_mats <- all_mats + bw_mat
+            count <- count + 1 # increase count of areas for which stats have been acquired
+
+          }
+          else{ # if there are missing values, don't run stats but still add frequency data
+            results_df <- data.frame(
+              # "la" = la,
+              # "county" = county,
+              "date" = this_date,
+              "region" = this_region,
+              "country" = country,
+              #"force" = force,
+              "black_stopped" = temp_df["Black", "stopped"],
+              "black_not_stopped" = temp_df["Black", "not_stopped"],
+              "black_population" = temp_df["Black", "pop"],
+              "black_stop_rate" = temp_df["Black", "percentage"],
+              "white_stopped" = temp_df["White", "stopped"],
+              "white_not_stopped" = temp_df["White", "not_stopped"],
+              "white_population" = temp_df["White", "pop"],
+              "white_stop_rate" = temp_df["White", "percentage"],
+              "or" = NA,
+              "or_ci_low" = NA,
+              "or_ci_upp" = NA,
+              "rr" = NA,
+              "rr_ci_low" = NA,
+              "rr_ci_upp" = NA,
+              "warning" = NA)
+          }
+
+        }
+        # if there is not data for both black and white, and/or there are missing values
+        else{
+          results_df <- data.frame(
+            # "la" = la,
+            # "county" = county,
+            "date" = this_date,
+            "region" = this_region,
+            "country" = country,
+            #"force" = force,
+            "black_stopped" = NA,
+            "black_not_stopped" = NA,
+            "black_population" = NA,
+            "black_stop_rate" = NA,
+            "white_stopped" = NA,
+            "white_not_stopped" = NA,
+            "white_population" = NA,
+            "white_stop_rate" = NA,
+            "or" = NA,
+            "or_ci_low" = NA,
+            "or_ci_upp" = NA,
+            "rr" = NA,
+            "rr_ci_low" = NA,
+            "rr_ci_upp" = NA,
+            "warning" = NA)
+        }
+
+
+        all_results <- rbind(all_results, results_df) # add results to all results
+        all_dfs <- as.data.frame(all_mats)
+        cat("\014")
+        print(paste0(i, " of ", length(regions), " complete (", round(100 * (i / length(regions)),2 ), "%)"))
+      }
     }
   }
   return(all_results)
