@@ -11,6 +11,9 @@ analyse_records <- function(data_file,
   data <- data %>%
     subset(., country != "Northern Ireland" & country != "Scotland")
 
+  # add region for Wales
+  data$region[data$country == "Wales"] <- "Wales"
+
   # load population estimates
   if(geography == "la"){
     population_ests <- read.csv("./data/la_pop_estimates_2021_2.csv")
@@ -21,7 +24,9 @@ analyse_records <- function(data_file,
       dplyr::mutate(across(ncol(population_ests)), dplyr::na_if(., "~"))
   }
   else if(geography == "region"){
-    population_ests <- read.csv("./data/regional_pop_ests_sep_21.csv")
+    population_ests <- read.csv("./data/census2011_pop_ests_by_ethn_region.csv")
+    population_ests$Region[which(population_ests$Region == "Yorkshire and The Humber")] <- "Yorkshire and the Humber"
+
   }
 
   # set region of all Welsh LAs to 'Wales' and of Scottish LAs to 'Scotland'
@@ -300,7 +305,7 @@ analyse_records <- function(data_file,
   }
   else if(geography == "region"){
 
-    regions <- unique(subset_df$region) # get la names from the dataset
+    regions <- unique(data_subset$region) # get la names from the dataset
     all_results <- data.frame() # initialise
     all_mats <- matrix(data = c(0,0,0,0), ncol = 2, nrow = 2)
     all_dfs <- data.frame()
@@ -311,11 +316,11 @@ analyse_records <- function(data_file,
       results_df <- data.frame() # initialise
 
       # get data for la
-      #la <- unique(subset_df[which(subset_df$la_name == las[i]), "la_name"])
-      #county <- unique(subset_df[which(subset_df$la_name == las[i]), "county"])
-      this_region <- unique(subset_df[which(subset_df$region == regions[i]), "region"]) # need to use different name to that in subset_df
-      country <- unique(subset_df[which(subset_df$region == regions[i]), "country"])
-      #force <- unique(subset_df[which(subset_df$region == regions[i]), "force"])
+      #la <- unique(data_subset[which(data_subset$la_name == las[i]), "la_name"])
+      #county <- unique(data_subset[which(data_subset$la_name == las[i]), "county"])
+      this_region <- unique(data_subset[which(data_subset$region == regions[i]), "region"]) # need to use different name to that in data_subset
+      country <- unique(data_subset[which(data_subset$region == regions[i]), "country"])
+      #force <- unique(data_subset[which(data_subset$region == regions[i]), "force"])
 
       for(j in 1:length(dates)){
         if(date == "by_year"){
@@ -342,7 +347,7 @@ analyse_records <- function(data_file,
           temp_df <- temp_df %>%
             dplyr::group_by(ethnicity) %>%
             dplyr::summarise(
-              stopped = n()
+              stopped = dplyr::n()
             ) %>%
             dplyr::mutate(
               pop = c(as.numeric(population_ests[which(population_ests$Region == this_region), "White"]),
@@ -462,11 +467,3 @@ analyse_records <- function(data_file,
   }
   return(all_results)
 }
-
-test <- analyse_records("./data/data_36_months_to_dec_21.csv",
-                        geography = "region",
-                        ethnicity_definition = "self",
-                        comparison = c("White","Black"),
-                        date = "by_month")
-
-saveRDS(test,file="./data/ss_by_month_region.rds")
