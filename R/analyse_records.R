@@ -141,7 +141,8 @@ analyse_records <- function(data_file,
   if(geography == "la"){
 
     las <- unique(data_subset$la_name) # get la names from the dataset
-    all_results <- data.frame() # initialise
+    # initialise
+    all_results <- data.frame()
     all_mats <- matrix(data = c(0,0,0,0), ncol = 2, nrow = 2)
     all_dfs <- data.frame()
     count <- 0
@@ -188,28 +189,29 @@ analyse_records <- function(data_file,
               stopped = dplyr::n()
             ) %>%
             dplyr::mutate(
-              pop = c(as.numeric(population_ests[which(population_ests$LAD == la), "White"]),
-                      as.numeric(population_ests[which(population_ests$LAD == la), "Black"])),
+              pop = c(as.numeric(population_ests[which(population_ests$LAD == la), ethnicity_1]),
+                      as.numeric(population_ests[which(population_ests$LAD == la), ethnicity_2])),
               percentage = 100 * (stopped/pop),
               not_stopped = pop - stopped
             ) %>%
             as.data.frame()
 
-          row.names(temp_df) <- temp_df$ethnicity
+          row.names(temp_df) <- comparison
 
-          black <- data.frame("Black" = c("stopped" = temp_df["Black", "stopped"], "not_stopped" = temp_df["Black", "not_stopped"]))
+          ethn_1 <- data.frame("ethnicity_1" = c("stopped" = temp_df[ethnicity_1, "stopped"],
+                                                 "not_stopped" = temp_df[ethnicity_1, "not_stopped"]))
 
-          white <- data.frame("White" = c("stopped" = temp_df["White", "stopped"], "not_stopped" = temp_df["White", "not_stopped"]))
+          ethn_2 <- data.frame("ethnicity_2" = c("stopped" = temp_df[ethnicity_2, "stopped"],
+                                                 "not_stopped" = temp_df[ethnicity_2, "not_stopped"]))
 
-          bw_mat <- as.matrix(cbind(black, white)) # matrix for crosstable
-          bw_df <- as.data.frame(bw_mat) # df for custom rr function
+          comp_mat <- as.matrix(cbind(ethn_2, ethn_1)) # matrix for crosstable
+          comp_df <- as.data.frame(comp_mat) # df for custom rr function
 
-
-          if(sum(is.na(bw_mat)) == 0){ # if there are figures for all cells, run stats
+          if(sum(is.na(comp_mat)) == 0){ # if there are figures for all cells, run stats
             # use tryCatch to collect warning messages
-            xtab <- tryCatch(gmodels::CrossTable(bw_mat, chisq = T, fisher = T, expected = T),
-                             warning = function(w) return(list(gmodels::CrossTable(bw_mat, chisq = T, fisher = T, expected = T), w)))
-            rr <- riskratio_from_df(bw_df, "Stop & Search")
+            xtab <- tryCatch(gmodels::CrossTable(comp_mat, chisq = T, fisher = T, expected = T),
+                             warning = function(w) return(list(gmodels::CrossTable(comp_mat, chisq = T, fisher = T, expected = T), w)))
+            rr <- riskratio_from_df(comp_df, "Stop & Search")
             results_df <- data.frame(
               "date" = this_date,
               "la" = la,
@@ -217,14 +219,14 @@ analyse_records <- function(data_file,
               "region" = region,
               "country" = country,
               "force" = force,
-              "black_stopped" = temp_df["Black", "stopped"],
-              "black_not_stopped" = temp_df["Black", "not_stopped"],
-              "black_population" = temp_df["Black", "pop"],
-              "black_stop_rate" = temp_df["Black", "percentage"],
-              "white_stopped" = temp_df["White", "stopped"],
-              "white_not_stopped" = temp_df["White", "not_stopped"],
-              "white_population" = temp_df["White", "pop"],
-              "white_stop_rate" = temp_df["White", "percentage"],
+              "ethnicity_2_stopped" = temp_df[ethnicity_2, "stopped"],
+              "ethnicity_2_not_stopped" = temp_df[ethnicity_2, "not_stopped"],
+              "ethnicity_2_population" = temp_df[ethnicity_2, "pop"],
+              "ethnicity_2_stop_rate" = temp_df[ethnicity_2, "percentage"],
+              "ethnicity_1_stopped" = temp_df[ethnicity_1, "stopped"],
+              "ethnicity_1_not_stopped" = temp_df[ethnicity_1, "not_stopped"],
+              "ethnicity_1_population" = temp_df[ethnicity_1, "pop"],
+              "ethnicity_1_stop_rate" = temp_df[ethnicity_1, "percentage"],
               "or" = ifelse(is.list(xtab[[1]]),
                             xtab[[1]][["fisher.ts"]][["estimate"]][["odds ratio"]],
                             xtab[["fisher.ts"]][["estimate"]][["odds ratio"]]),
@@ -239,7 +241,7 @@ analyse_records <- function(data_file,
               "rr_ci_upp" = rr$ci_upp,
               "warning" = ifelse(is.list(xtab[[1]]), xtab[[2]][["message"]], NA))
 
-            all_mats <- all_mats + bw_mat
+            all_mats <- all_mats + comp_mat
             count <- count + 1 # increase count of areas for which stats have been acquired
 
           }
@@ -251,14 +253,14 @@ analyse_records <- function(data_file,
               "region" = region,
               "country" = country,
               "force" = force,
-              "black_stopped" = temp_df["Black", "stopped"],
-              "black_not_stopped" = temp_df["Black", "not_stopped"],
-              "black_population" = temp_df["Black", "pop"],
-              "black_stop_rate" = temp_df["Black", "percentage"],
-              "white_stopped" = temp_df["White", "stopped"],
-              "white_not_stopped" = temp_df["White", "not_stopped"],
-              "white_population" = temp_df["White", "pop"],
-              "white_stop_rate" = temp_df["White", "percentage"],
+              "ethnicity_2_stopped" = temp_df[ethnicity_2, "stopped"],
+              "ethnicity_2_not_stopped" = temp_df[ethnicity_2, "not_stopped"],
+              "ethnicity_2_population" = temp_df[ethnicity_2, "pop"],
+              "ethnicity_2_stop_rate" = temp_df[ethnicity_2, "percentage"],
+              "ethnicity_1_stopped" = temp_df[ethnicity_1, "stopped"],
+              "ethnicity_1_not_stopped" = temp_df[ethnicity_1, "not_stopped"],
+              "ethnicity_1_population" = temp_df[ethnicity_1, "pop"],
+              "ethnicity_1_stop_rate" = temp_df[ethnicity_1, "percentage"],
               "or" = NA,
               "or_ci_low" = NA,
               "or_ci_upp" = NA,
@@ -278,14 +280,14 @@ analyse_records <- function(data_file,
             "region" = region,
             "country" = country,
             "force" = force,
-            "black_stopped" = NA,
-            "black_not_stopped" = NA,
-            "black_population" = NA,
-            "black_stop_rate" = NA,
-            "white_stopped" = NA,
-            "white_not_stopped" = NA,
-            "white_population" = NA,
-            "white_stop_rate" = NA,
+            "ethnicity_2_stopped" = NA,
+            "ethnicity_2_not_stopped" = NA,
+            "ethnicity_2_population" = NA,
+            "ethnicity_2_stop_rate" = NA,
+            "ethnicity_1_stopped" = NA,
+            "ethnicity_1_not_stopped" = NA,
+            "ethnicity_1_population" = NA,
+            "ethnicity_1_stop_rate" = NA,
             "or" = NA,
             "or_ci_low" = NA,
             "or_ci_upp" = NA,
@@ -306,11 +308,11 @@ analyse_records <- function(data_file,
   else if(geography == "region"){
 
     regions <- unique(data_subset$region) # get la names from the dataset
-    all_results <- data.frame() # initialise
+    # initialise
+    all_results <- data.frame()
     all_mats <- matrix(data = c(0,0,0,0), ncol = 2, nrow = 2)
     all_dfs <- data.frame()
     count <- 0
-
 
     for(i in 1:length(regions)){
       results_df <- data.frame() # initialise
@@ -350,8 +352,8 @@ analyse_records <- function(data_file,
               stopped = dplyr::n()
             ) %>%
             dplyr::mutate(
-              pop = c(as.numeric(population_ests[which(population_ests$Region == this_region), "White"]),
-                      as.numeric(population_ests[which(population_ests$Region == this_region), "Black"])),
+              pop = c(as.numeric(population_ests[which(population_ests$Region == this_region), ethnicity_1]),
+                      as.numeric(population_ests[which(population_ests$Region == this_region), ethnicity_2])),
               percentage = 100 * (stopped/pop),
               not_stopped = pop - stopped
             ) %>%
@@ -359,19 +361,20 @@ analyse_records <- function(data_file,
 
           row.names(temp_df) <- temp_df$ethnicity
 
-          black <- data.frame("Black" = c("stopped" = temp_df["Black", "stopped"], "not_stopped" = temp_df["Black", "not_stopped"]))
+          ethn_1 <- data.frame("ethnicity_1" = c("stopped" = temp_df[ethnicity_1, "stopped"],
+                                                 "not_stopped" = temp_df[ethnicity_1, "not_stopped"]))
 
-          white <- data.frame("White" = c("stopped" = temp_df["White", "stopped"], "not_stopped" = temp_df["White", "not_stopped"]))
+          ethn_2 <- data.frame("ethnicity_2" = c("stopped" = temp_df[ethnicity_2, "stopped"],
+                                                 "not_stopped" = temp_df[ethnicity_2, "not_stopped"]))
 
-          bw_mat <- as.matrix(cbind(black, white)) # matrix for crosstable
-          bw_df <- as.data.frame(bw_mat) # df for custom rr function
+          comp_mat <- as.matrix(cbind(ethn_2, ethn_1)) # matrix for crosstable
+          comp_df <- as.data.frame(comp_mat) # df for custom rr function
 
-
-          if(sum(is.na(bw_mat)) == 0){ # if there are figures for all cells, run stats
+          if(sum(is.na(comp_mat)) == 0){ # if there are figures for all cells, run stats
             # use tryCatch to collect warning messages
-            xtab <- tryCatch(gmodels::CrossTable(bw_mat, chisq = T, fisher = T, expected = T),
-                             warning = function(w) return(list(gmodels::CrossTable(bw_mat, chisq = T, fisher = T, expected = T), w)))
-            rr <- riskratio_from_df(bw_df, "Stop & Search")
+            xtab <- tryCatch(gmodels::CrossTable(comp_mat, chisq = T, fisher = T, expected = T),
+                             warning = function(w) return(list(gmodels::CrossTable(comp_mat, chisq = T, fisher = T, expected = T), w)))
+            rr <- riskratio_from_df(comp_df, "Stop & Search")
             results_df <- data.frame(
               # "la" = la,
               # "county" = county,
@@ -379,14 +382,14 @@ analyse_records <- function(data_file,
               "region" = this_region,
               "country" = country,
               #"force" = force,
-              "black_stopped" = temp_df["Black", "stopped"],
-              "black_not_stopped" = temp_df["Black", "not_stopped"],
-              "black_population" = temp_df["Black", "pop"],
-              "black_stop_rate" = temp_df["Black", "percentage"],
-              "white_stopped" = temp_df["White", "stopped"],
-              "white_not_stopped" = temp_df["White", "not_stopped"],
-              "white_population" = temp_df["White", "pop"],
-              "white_stop_rate" = temp_df["White", "percentage"],
+              "ethnicity_2_stopped" = temp_df[ethnicity_2, "stopped"],
+              "ethnicity_2_not_stopped" = temp_df[ethnicity_2, "not_stopped"],
+              "ethnicity_2_population" = temp_df[ethnicity_2, "pop"],
+              "ethnicity_2_stop_rate" = temp_df[ethnicity_2, "percentage"],
+              "ethnicity_1_stopped" = temp_df[ethnicity_1, "stopped"],
+              "ethnicity_1_not_stopped" = temp_df[ethnicity_1, "not_stopped"],
+              "ethnicity_1_population" = temp_df[ethnicity_1, "pop"],
+              "ethnicity_1_stop_rate" = temp_df[ethnicity_1, "percentage"],
               "or" = ifelse(is.list(xtab[[1]]),
                             xtab[[1]][["fisher.ts"]][["estimate"]][["odds ratio"]],
                             xtab[["fisher.ts"]][["estimate"]][["odds ratio"]]),
@@ -401,7 +404,7 @@ analyse_records <- function(data_file,
               "rr_ci_upp" = rr$ci_upp,
               "warning" = ifelse(is.list(xtab[[1]]), xtab[[2]][["message"]], NA))
 
-            all_mats <- all_mats + bw_mat
+            all_mats <- all_mats + comp_mat
             count <- count + 1 # increase count of areas for which stats have been acquired
 
           }
@@ -413,14 +416,14 @@ analyse_records <- function(data_file,
               "region" = this_region,
               "country" = country,
               #"force" = force,
-              "black_stopped" = temp_df["Black", "stopped"],
-              "black_not_stopped" = temp_df["Black", "not_stopped"],
-              "black_population" = temp_df["Black", "pop"],
-              "black_stop_rate" = temp_df["Black", "percentage"],
-              "white_stopped" = temp_df["White", "stopped"],
-              "white_not_stopped" = temp_df["White", "not_stopped"],
-              "white_population" = temp_df["White", "pop"],
-              "white_stop_rate" = temp_df["White", "percentage"],
+              "ethnicity_2_stopped" = temp_df[ethnicity_2, "stopped"],
+              "ethnicity_2_not_stopped" = temp_df[ethnicity_2, "not_stopped"],
+              "ethnicity_2_population" = temp_df[ethnicity_2, "pop"],
+              "ethnicity_2_stop_rate" = temp_df[ethnicity_2, "percentage"],
+              "ethnicity_1_stopped" = temp_df[ethnicity_1, "stopped"],
+              "ethnicity_1_not_stopped" = temp_df[ethnicity_1, "not_stopped"],
+              "ethnicity_1_population" = temp_df[ethnicity_1, "pop"],
+              "ethnicity_1_stop_rate" = temp_df[ethnicity_1, "percentage"],
               "or" = NA,
               "or_ci_low" = NA,
               "or_ci_upp" = NA,
@@ -440,14 +443,14 @@ analyse_records <- function(data_file,
             "region" = this_region,
             "country" = country,
             #"force" = force,
-            "black_stopped" = NA,
-            "black_not_stopped" = NA,
-            "black_population" = NA,
-            "black_stop_rate" = NA,
-            "white_stopped" = NA,
-            "white_not_stopped" = NA,
-            "white_population" = NA,
-            "white_stop_rate" = NA,
+            "ethnicity_2_stopped" = NA,
+            "ethnicity_2_not_stopped" = NA,
+            "ethnicity_2_population" = NA,
+            "ethnicity_2_stop_rate" = NA,
+            "ethnicity_1_stopped" = NA,
+            "ethnicity_1_not_stopped" = NA,
+            "ethnicity_1_population" = NA,
+            "ethnicity_1_stop_rate" = NA,
             "or" = NA,
             "or_ci_low" = NA,
             "or_ci_upp" = NA,
@@ -465,5 +468,10 @@ analyse_records <- function(data_file,
       }
     }
   }
+  # add names to ethnicity categories
+  names(all_results) <- sub("^ethnicity_1", ethnicity_1, names(all_results))
+  names(all_results) <- sub("^ethnicity_2", ethnicity_2, names(all_results))
+
   return(all_results)
+
 }
