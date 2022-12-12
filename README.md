@@ -1,4 +1,7 @@
+# Overview
+
 A package for facilitating research on stop and search in the UK by making up-to-date stop and search data more accessible and usable.
+
 ## Introduction
 
 The UK Police make stop and search data openly available via https://data.police.uk. Currently, the two main ways of accessing these data is:
