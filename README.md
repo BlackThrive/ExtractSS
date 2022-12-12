@@ -27,7 +27,11 @@ This package was built in R version 4.2.2 and has the following dependencies:
 -	chron version 2.3-58
 
 ## Installation
-To install this package, use devtools::install_github(“BlackThrive/extractss”)
+To install this package, use 
+```R
+devtools::install_github(“BlackThrive/extractss”)
+```
 ## How it works
 The extract_ss_data function works by making iterative http POST requests to the Police API (https://data.police.uk/api/stops-street?). There are two components within each POST request: the date (month and year) and character string of longitudes and latitudes that describe a polygon (i.e., a Local Authority District). The user can specify which LAD(s) and time periods(s) to search. 
+
 The function draws on a list of coordinates defining the boundaries of each LAD in the UK. The coordinate list is based on 2021 Local Authority District boundary data acquired from the Office for National Statistics Open Geography Portal (https://geoportal.statistics.gov.uk/), which were combined with lookups from the same source (1) to match LADs to Counties, Regions, and Countries and (2) to match LADs to Police Force Areas. The resultant list thus contained an element for each LAD in the UK, within which were contained the LAD’s coordinates and associated county, region, country, and Police Force. This coordinate list is built into the package and is called ‘coords’. The script used to create the list is available in the R folder.
