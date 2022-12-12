@@ -1,8 +1,8 @@
-# Overview
+# ExtractSS
 
 A package for facilitating research on stop and search in the UK by making up-to-date stop and search data more accessible and usable.
 
-## Introduction
+# Introduction
 
 The UK Police make stop and search data openly available via https://data.police.uk. Currently, the two main ways of accessing these data is:
 - By downloading data files by Force and time period, producing a separate data file for each Force-time period combination, or
@@ -14,7 +14,7 @@ The purpose of extractss is to address these limitations in the accessibility an
 
 Also included in this package are functions that we have used for our analyses exploring racial disparities in the use of stop and search, and which may be of use to other researchers. The principal function is analyse_records, which creates contingency tables from the extracted data to calculate ratios between the rates at which people of different ethnicities are stopped and searched.
 
-## Packages
+# Packages
 This package was built in R version 4.2.2 and has the following dependencies:
 -	magrittr version 2.0.3
 -	dplyr version 1.0.10
