@@ -38,7 +38,7 @@ The function draws on a list of coordinates defining the boundaries of each LAD 
 
 ## Examples
 The function extract_ss_data is used to extract stop and search records from the Police API. The user must assign the output of this function to an R object. The simplest usage requires only the argument ‘coord_list’, which is the list of areas for which to acquire data. By default, the function will extract for the most recent 12 months. An example call could be:
-```
+```R
 extraction <- extract_ss_data(coord_list)
 ```
 
@@ -47,7 +47,8 @@ extraction <- extract_ss_data(coord_list)
 -	missing_entries: Data frame which records any local authorities  for which no data was acquired.
 -	server_errors: Data frame which records any unresolved server errors (i.e., cases where the function stopped trying the POST request).
 In most cases, missing_entries and server_errors will be empty. The user can coerce the ‘result’ list element to a data frame using: 
-```
+
+```R
 extraction_df <- extraction[[“result”]]
 ```
 This dataframe can then be saved to CSV or RDS: 
@@ -55,10 +56,62 @@ This dataframe can then be saved to CSV or RDS:
 write.csv(extraction_df, file = “inpath/filename.csv”)
 saveRDS(extraction_df, file = “inpath/filename.Rds”) 
 ```
+
 ### Other options
 
-As mentioned previously, by default extract_ss_data extracts data for the most recent 12 months that are available in the API. This default behaviour can be changed using additional arguments. 
--	num_months_backwards: The user can change how many months backwards (from the most recently available data) to extract, up to 36 months (this is the limit imposed by the API itself). There are additional arguments that can be specified if the user wishes.
--	back_to_month/back_to_year: Instead of specifying a number of months backwards, the user can specify a specific month-year combination from which data will be acquired to the most recent data available.
--	most_recent_month/most_recent_year: The user can specify what the most recent month-year should be if they do not want to use the most recently available. In combination with num_months_backwards, this will acquired data from the specified month-year backwards the number of months specified . In combination with back_to_month/back_to_year, the function will acquire data between the month_year specification of the two groups of arguments.
+#### Area specification 
 
+Extraction can take a long time depending on the user's needs. In many cases it may be preferred to only extract data from specified areas. For example, since Policing in the UK is devolved, many users may be interested in stop records for England and Wales. The built-in ‘coords’ list covers the entirity of the UK, but can be subset to specific areas using the 'subset_coords' function. To subset to England and Wales, for example, the user could use:
+
+```R
+england_wales <- subset(coords(coords, country = c("England", "Wales"))
+```
+
+Using 'subset_coords', it is possible to subset based on the following groupings:
+ - Local Authority
+ - County
+ - Region
+ - Country 
+ - Force
+ 
+So, users interested in just the LADs Lambeth, Haringey, and Birmingham could use:
+
+```R
+LADs_of_interest <- subset_coords(coords, la = c(“Lambeth”, “Haringey”, “Birmingham”))
+```
+
+Likewise, if the user is only interested in London, they can specify:
+
+```R
+london_LADs <- subset_coord(coords, region = “London”)
+```
+
+It is also possible to subset to specific Police Force, e.g.
+
+```R
+met_police <- subset_coord(coords, force = “Metropolitan Police”)
+```
+
+To find out what areas are available for subsetting, use the function 'show_area_values' . Providing no argument will produce a data frame listing all LADs and their corresponding area details (i.e., county, region, country, force), e.g.:
+
+```R
+area_values <- show_area_values()
+```
+
+The user can also specify one of "la", "county", "region",  "country", or "force" to produce a character vector listing all the names corresponding to the area type. For example:
+
+```R
+# just see the values
+show_area_values(type = "region")
+# or assign to an object
+regions <- show_area_values(type = "region")
+```
+
+#### Time specification
+
+As mentioned previously, by default extract_ss_data extracts data for the most recent 12 months that are available in the API. This default behaviour can be changed using additional arguments. 
+-	num_months_backwards: The user can change how many months backwards (from the most recently available data) to extract, up to 36 months (this is the limit imposed by the API itself). 
+-	back_to_month/back_to_year: Instead of specifying a number of months backwards, the user can specify a specific month-year combination from which data will be acquired to the most recent data available. See below for how to find out what the last available date is.
+-	most_recent_month/most_recent_year: The user can specify what the most recent month-year should be if they do not want to use the most recently available. In combination with num_months_backwards, this will acquire data from the specified month-year backwards the number of months specified . In combination with back_to_month/back_to_year, the function will acquire data between the month_year specification of the two groups of arguments. See below for how to find out what the most recent available date is.
+
+To find out what the most recent/oldest dates that are available in the API, the user can use the functions 'newest_data' and 'oldest_data', respectively.
