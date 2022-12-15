@@ -104,7 +104,7 @@ lon_extraction <- extract_ss_data(london_coords)
 
 # It is also possible to subset to specific Police Force, e.g.
 met_coords <- subset_coord(coords, force = “Metropolitan Police”)
-met_extractionextract_ss_data(met_coords)
+met_extraction <- extract_ss_data(met_coords)
 ```
 
 To find out the names of the areas that are available for subsetting, use the function 'show_area_values' . Providing no argument will produce a data frame listing all LADs and their corresponding area details (i.e., county, region, country, force), e.g.:
@@ -130,4 +130,22 @@ As mentioned previously, by default extract_ss_data extracts data for the most r
 -	back_to_month/back_to_year: Instead of specifying a number of months backwards, the user can specify a specific month-year combination from which data will be acquired to the most recent data available. See below for how to find out what the last available date is.
 -	most_recent_month/most_recent_year: The user can specify what the most recent month-year should be if they do not want to use the most recently available. In combination with num_months_backwards, this will acquire data from the specified month-year backwards the number of months specified . In combination with back_to_month/back_to_year, the function will acquire data between the month_year specification of the two groups of arguments. See below for how to find out what the most recent available date is.
 
+```R
+# get all records in england and wales back 36 months
+eng_wal_extraction <- extract_ss_data(eng_wal_coords, num_months_backwards = 36)
+
+# get all records in england and wales back to january 2020
+eng_wal_extraction <- extract_ss_data(eng_wal_coords, back_to_month = 1, back_to_year = 2020)
+
+# get all records in england and wales between january 2020 and july 2021
+eng_wal_extraction <- extract_ss_data(eng_wal_coords, most_recent_month = 7, most_recent_year = 2021, back_to_month = 1, back_to_year = 2020)
+```
 To find out what the most recent/oldest dates that are available in the API, the user can use the functions 'newest_data' and 'oldest_data', respectively.
+
+```R
+# show me the most recent date for which data are available
+newest_data()
+
+# show me the oldest date for which data are available
+oldest_data()
+```
