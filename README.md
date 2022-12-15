@@ -138,7 +138,11 @@ eng_wal_extraction <- extract_ss_data(eng_wal_coords, num_months_backwards = 36)
 eng_wal_extraction <- extract_ss_data(eng_wal_coords, back_to_month = 1, back_to_year = 2020)
 
 # get all records in england and wales between january 2020 and july 2021
-eng_wal_extraction <- extract_ss_data(eng_wal_coords, most_recent_month = 7, most_recent_year = 2021, back_to_month = 1, back_to_year = 2020)
+eng_wal_extraction <- extract_ss_data(eng_wal_coords, 
+                                      most_recent_month = 7, 
+                                      most_recent_year = 2021, 
+                                      back_to_month = 1, 
+                                      back_to_year = 2020)
 ```
 To find out what the most recent/oldest dates that are available in the API, the user can use the functions 'newest_data' and 'oldest_data', respectively.
 
