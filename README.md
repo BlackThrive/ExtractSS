@@ -67,7 +67,7 @@ write.csv(extraction_df, file = “inpath/filename.csv”)
 saveRDS(extraction_df, file = “inpath/filename.Rds”) 
 ```
 
-Because extraction can take a long time depending on the user's needs, it may be preferable to make use of the various other utilty functions to better define the extraction parameters, such as the areas and time period of interest. 
+*NOTE*: Because extraction can take a long time depending on the user's needs, it may be preferable to make use of the various other utility functions to better define the extraction parameters, such as the areas and time period of interest. 
 
 ### Area specification <a name="areaspec"></a>
 
