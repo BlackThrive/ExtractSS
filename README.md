@@ -79,7 +79,7 @@ In many cases it may be preferred to only extract data from specified areas. Usi
  - Country 
  - Force
 
-For example, since Policing in the UK is devolved, many users may be interested in stop records for England and Wales. The built-in ‘coords’ list covers the entirity of the UK, but can be subset to specific areas using the 'subset_coords' function. To subset to England and Wales, for example, the user could use:
+For example, since Policing in the UK is devolved, many users may be interested in stop records for just England and Wales. The built-in ‘coords’ list covers the entirity of the UK, but can be subset to specific areas using the 'subset_coords' function. To subset to England and Wales, for example, the user could use:
 
 ```R
 eng_wal_coords <- subset(coords(coords, country = c("England", "Wales"))
