@@ -7,7 +7,7 @@ A package for facilitating research on stop and search in the UK by making up-to
 - [Packages](#packages)
 - [Installation](#installation)
 - [How it works](#how)
-- [Examples](#examples)
+- [Example usage](#examples)
     - [Area specification](#areaspec)
     - [Time specification](#timespec)
 # Introduction <a name="introduction"></a>
