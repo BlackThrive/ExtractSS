@@ -52,7 +52,7 @@ extraction <- extract_ss_data(coords)
 ```
 
  The output of this function is a list containing three elements: 
--	result: This is the data frame containing the acquired stop records. Can be assigned as a named data frame using, e.g., if function output has been called data, data frame can be assigned as `df <- data[[1]]`.
+-	result: This is the data frame containing the acquired stop records.
 -	missing_entries: Data frame which records any local authorities  for which no data was acquired.
 -	server_errors: Data frame which records any unresolved server errors (i.e., cases where the function stopped trying the POST request).
 
