@@ -1,4 +1,4 @@
-# extract_ss
+# extractss
 
 A package for facilitating research on stop and search in the UK by making up-to-date stop and search data more accessible and usable.
 
