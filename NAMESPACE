@@ -2,6 +2,10 @@
 
 export("%>%")
 export(extract_ss_data)
+export(load_coords)
 export(newest_data)
 export(oldest_data)
+export(riskratio_from_df)
+export(show_area_values)
+export(subset_coords)
 importFrom(magrittr,"%>%")
