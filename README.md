@@ -8,9 +8,8 @@ A package for facilitating research on stop and search in the UK by making up-to
 - [Installation](#installation)
 - [How it works](#how)
 - [Examples](#examples)
-    - [Other options](#opts)
-        - [Area specification](#areaspec)
-        - [Time specification](#timespec)
+    - [Area specification](#areaspec)
+    - [Time specification](#timespec)
 # Introduction <a name="introduction"></a>
 
 The UK Police make stop and search data openly available via https://data.police.uk. Currently, the two main ways of accessing these data is:
