@@ -12,7 +12,7 @@ A package for facilitating research on stop and search in the UK by making up-to
     - [Time specification](#timespec)
 # Introduction <a name="introduction"></a>
 
-The UK Police make stop and search data openly available via https://data.police.uk. Currently, the two main ways of accessing these data is:
+The UK Police make stop and search data openly available via https://data.police.uk. Currently, the two main ways of accessing these data are:
 - By downloading data files by Force and time period, producing a separate data file for each Force-time period combination, or
 - By making http GET and POST requests via the site's applciation programming interface (API). Using this method, users can request searches occuring within a timeframe at locations/within areas, or again by Force.
 
@@ -44,7 +44,7 @@ The 'extract_ss_data' function works by making iterative http POST requests to t
 
 ## Example usage <a name="examples"></a>
 
-The aim of this section is to outline how to quickly get started using extractSS. For more details on the functions in extractss and their parameters, see the extractss Wiki.
+The aim of this section is to outline how to quickly get started using extractSS. For more details on the functions in extractss and their parameters, see the [extractss Wiki](https://github.com/BlackThrive/extractss/wiki).
 
 The main workhorse of extractss is the function 'extract_ss_data'. The simplest usage requires only the argument ‘coord_list’, which is the list of areas for which to acquire data. By default, the function will extract for the most recent 12 months. So, if the user wishes to extract data for all the areas available, the call would be:
 ```R
