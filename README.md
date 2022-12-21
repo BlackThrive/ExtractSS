@@ -44,7 +44,7 @@ The 'extract_ss_data' function works by making iterative http POST requests to t
 
 ## Example usage <a name="examples"></a>
 
-The aim of this section is to outline how to quickly get started using extractSS. For more details on the functions in extractss and their parameters, see the extractss Wiki.
+The aim of this section is to outline how to quickly get started using extractSS. For more details on the functions in extractss and their parameters, see the [extractss Wiki](https://github.com/BlackThrive/extractss/wiki).
 
 The main workhorse of extractss is the function 'extract_ss_data'. The simplest usage requires only the argument ‘coord_list’, which is the list of areas for which to acquire data. By default, the function will extract for the most recent 12 months. So, if the user wishes to extract data for all the areas available, the call would be:
 ```R
