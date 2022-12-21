@@ -5,48 +5,47 @@
 \title{Extract stop and search records}
 \usage{
 extract_ss_data(
-  coord_list,
+  coord_list = coords,
+  num_months_backwards = 12,
+  oldest_month = NULL,
+  oldest_year = NULL,
   most_recent_month = NULL,
   most_recent_year = NULL,
-  num_months_backwards = 12,
-  back_to_month = NULL,
-  back_to_year = NULL,
   wait_time = 5,
-  max_tries = Inf
+  max_tries = 5
 )
 }
 \arguments{
 \item{coord_list}{List of coordinates for which to acquire records}
 
-\item{most_recent_month}{The most recent month of interest.
-Numeric value (e.g., 8 for August).
-If \code{NULL}, the function will determine this based on the most recent API
-update.}
-
-\item{most_recent_year}{The most recent month of interest.
-Numeric value (e.g., 2021). If \code{NULL}, the function will determine this based
-on the most recent API update.}
-
 \item{num_months_backwards}{The number of months backwards from the start
 point for which to acquire data. Numeric value. Default is 12. Maximum is 36
 (limit imposed by API).}
 
-\item{back_to_month}{Instead of specifying \code{num_months_backwards}, the user
+\item{oldest_month}{Instead of specifying \code{num_months_backwards}, the user
 can specify the oldest month of interest (in combination with the oldest year
 of interest). Numeric value (e.g., 8 for August).}
 
-\item{back_to_year}{Instead of specifying \code{num_months_backwards}, the user
-can specify the oldest month of interest (in combination with the oldest
+\item{oldest_year}{Instead of specifying \code{num_months_backwards}, the user
+can specify the oldest year of interest (in combination with the oldest
 month of interest). Numeric value (e.g., 2019).}
+
+\item{most_recent_month}{The most recent month of interest. Numeric value
+(e.g., 8 for August). By default the function will determine this based on
+the most recent API update.}
+
+\item{most_recent_year}{The most recent month of interest. Numeric value
+(e.g., 2021). By default the function will determine this based on the most
+recent API update.}
 
 \item{wait_time}{If there is a server error when submitting POST request,
 the function will wait \code{wait_time} seconds before retrying. Numeric value.
 Default is 5.}
 
 \item{max_tries}{Specify the maximum number of times to retry a failed
-POST request. Numeric value. Default is Infinite, i.e., it will keep trying
-until it succeeds. This is because failures are usually due to timeouts that
-are resolved by retrying.}
+POST request. Numeric value. Default is 10. Failures are usually due to
+timeouts, which are often resolved by retrying, but can also be because there
+is no data avaible for the area/date combination.}
 }
 \value{
 A list containing three elements.
@@ -66,8 +65,21 @@ authority.
 }
 \examples{
 
-data <- extract_ss_data(ordered_coords, back_to_month = 1, back_to_year = 2019)
+# get data from the most recently available 12 months (default)
+data <- extract_ss_data(coords)
 
-data <- extract_ss_data(ordered_coords, most_recent_month = 8, most_recent_year = 2021)
+# get data from january 2019 to the most recent date
+data <- extract_ss_data(coords, oldest_month = 1, oldest_year = 2019)
+
+# get data between january 2019 and october 2020
+data <- extract_ss_data(coords, oldest_month = 1,
+                                oldest_year = 2019,
+                                most_recent_month = 10,
+                                most_recent_year = 2020)
+
+# get data 24 months backwards from august 2021
+data <- extract_ss_data(coords, most_recent_month = 8,
+                                most_recent_year = 2021,
+                                num_months_backwards = 24)
 
 }
