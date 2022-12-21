@@ -12,7 +12,7 @@ A package for facilitating research on stop and search in the UK by making up-to
     - [Time specification](#timespec)
 # Introduction <a name="introduction"></a>
 
-The UK Police make stop and search data openly available via https://data.police.uk. Currently, the two main ways of accessing these data is:
+The UK Police make stop and search data openly available via https://data.police.uk. Currently, the two main ways of accessing these data are:
 - By downloading data files by Force and time period, producing a separate data file for each Force-time period combination, or
 - By making http GET and POST requests via the site's applciation programming interface (API). Using this method, users can request searches occuring within a timeframe at locations/within areas, or again by Force.
 
