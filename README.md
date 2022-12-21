@@ -35,10 +35,35 @@ This package was built in R version 4.2.2 and has the following dependencies:
 -	chron version 2.3-58
 
 ## Installation <a name="installation"></a>
-To install this package, use 
+
+This package requires an RTools installation. The simplest way of installing or checking whether you have the correct version is to use the package 'installr'. To do so, copy and paste the code below to the command line:
 ```R
-devtools::install_github(“BlackThrive/extractss”)
+# check if you already have installr installed and install if not.
+packages <- c("installr")
+pkg_not_install <- packages[!(packages %in% installed.packages()[,"Package"])]
+lapply(pkg_not_install, install.packages, dependencies = TRUE)
+lapply(packages, library, character.only = TRUE)
+
+# run install.rtools. This will check for installation and update to latest
+installr::install.Rtools()
 ```
+
+Once Rtools is installed, use the 'devtools' package to install extractss
+
+```R
+# check if you already have devtools installed and install if not.
+packages <- c("devtools")
+pkg_not_install <- packages[!(packages %in% installed.packages()[,"Package"])]
+lapply(pkg_not_install, install.packages, dependencies = TRUE)
+lapply(packages, library, character.only = TRUE)
+
+# install extractss
+devtools::install_github(“BlackThrive/extractss”)
+
+# don't forget to add extractss to library
+library(extractss)
+```
+
 ## How it works <a name="how"></a>
 The 'extract_ss_data' function works by making iterative http POST requests to the Police API (https://data.police.uk/api/stops-street?). There are two components within each POST request: the date (month and year) and character string of longitudes and latitudes that describe a polygon (i.e., a Local Authority District). The polygon data is drawn from an in-built coordinate list called 'coords' which the user can call directly or assign to an R object. This list is based on 2021 Local Authority District boundary data acquired from the Office for National Statistics Open Geography Portal (https://geoportal.statistics.gov.uk/), which were combined with two lookups from the same source: (1) a lookup to match LADs to Counties, Regions, and Countries and (2) a lookup to match LADs to Police Force Areas. The resultant list thus contains an element for each LAD in the UK, within which are sub-elements corresponding to the LAD's coordinates, county, region, country, and Police Force. The script used to create the list is available in the R folder and is called 'create_coords_list.R'.
 
