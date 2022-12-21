@@ -19,6 +19,8 @@ Imports:
     forcats,
     epitools,
     gmodels,
-    chron
+    chron,
+    geojsonR,
+    readr
 Depends: 
     R (>= 2.10)

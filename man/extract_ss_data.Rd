@@ -5,7 +5,7 @@
 \title{Extract stop and search records}
 \usage{
 extract_ss_data(
-  coord_list = coords,
+  coord_list,
   num_months_backwards = 12,
   oldest_month = NULL,
   oldest_year = NULL,
