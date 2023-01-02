@@ -14,7 +14,7 @@ A package for facilitating research on stop and search in the UK by making up-to
 
 The UK Police make stop and search data openly available via https://data.police.uk. Currently, the two main ways of accessing these data are:
 - By downloading data files by Force and time period, producing a separate data file for each Force-time period combination, or
-- By making http GET and POST requests via the site's applciation programming interface (API). Using this method, users can request searches occuring within a timeframe at locations/within areas, or again by Force.
+- By making http GET and POST requests via the site's application programming interface (API). Using this method, users can request searches occuring within a timeframe at locations/within areas, or again by Force.
 
 For those interested in using these data for research on stop and search, there are limitations to these methods of data retrieval. The first method is inefficient because it requires that users manually combine datafiles across Forces and time points. In addition, though the data will include longitude/latitude variables, there is no geographic specification beyond this. The second method for retrieval requires users to know (or learn) how to use the API to extract data and, in addition, to be able to take the results of these queries and collate them into a datafile. Again, this process is time-consuming and inefficient. 
 
