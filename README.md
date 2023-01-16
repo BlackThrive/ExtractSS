@@ -14,7 +14,7 @@ A package for facilitating research on stop and search in the UK by making up-to
 
 The UK Police make stop and search data openly available via https://data.police.uk. Currently, the two main ways of accessing these data are:
 - By downloading data files by Force and time period, producing a separate data file for each Force-time period combination, or
-- By making http GET and POST requests via the site's applciation programming interface (API). Using this method, users can request searches occuring within a timeframe at locations/within areas, or again by Force.
+- By making http GET and POST requests via the site's application programming interface (API). Using this method, users can request searches occuring within a timeframe at locations/within areas, or again by Force.
 
 For those interested in using these data for research on stop and search, there are limitations to these methods of data retrieval. The first method is inefficient because it requires that users manually combine datafiles across Forces and time points. In addition, though the data will include longitude/latitude variables, there is no geographic specification beyond this. The second method for retrieval requires users to know (or learn) how to use the API to extract data and, in addition, to be able to take the results of these queries and collate them into a datafile. Again, this process is time-consuming and inefficient. 
 
@@ -35,12 +35,37 @@ This package was built in R version 4.2.2 and has the following dependencies:
 -	chron version 2.3-58
 
 ## Installation <a name="installation"></a>
-To install this package, use 
+
+This package requires an RTools installation. The simplest way of installing or checking whether you have the correct version is to use the package 'installr'. To do so, copy and paste the code below to the command line:
 ```R
-devtools::install_github(“BlackThrive/extractss”)
+# check if you already have installr installed and install if not.
+packages <- c("installr")
+pkg_not_install <- packages[!(packages %in% installed.packages()[,"Package"])]
+lapply(pkg_not_install, install.packages, dependencies = TRUE)
+lapply(packages, library, character.only = TRUE)
+
+# run install.rtools. This will check for installation and update to latest
+installr::install.Rtools()
 ```
+
+Once Rtools is installed, use the 'devtools' package to install extractss
+
+```R
+# check if you already have devtools installed and install if not.
+packages <- c("devtools")
+pkg_not_install <- packages[!(packages %in% installed.packages()[,"Package"])]
+lapply(pkg_not_install, install.packages, dependencies = TRUE)
+lapply(packages, library, character.only = TRUE)
+
+# install extractss
+devtools::install_github(“BlackThrive/extractss”)
+
+# don't forget to add extractss to library
+library(extractss)
+```
+
 ## How it works <a name="how"></a>
-The 'extract_ss_data' function works by making iterative http POST requests to the Police API (https://data.police.uk/api/stops-street?). There are two components within each POST request: the date (month and year) and character string of longitudes and latitudes that describe a polygon (i.e., a Local Authority District). The polygon data is drawn from an in-built coordinate list called 'coords' which the user can call directly or assign to an R object. This list is based on 2021 Local Authority District boundary data acquired from the Office for National Statistics Open Geography Portal (https://geoportal.statistics.gov.uk/), which were combined with two lookups from the same source: (1) a lookup to match LADs to Counties, Regions, and Countries and (2) a lookup to match LADs to Police Force Areas. The resultant list thus contains an element for each LAD in the UK, within which are sub-elements corresponding to the LAD's coordinates, county, region, country, and Police Force. The script used to create the list is available in the R folder and is called 'create_coords_list.R'.
+The 'extract_ss_data' function works by making iterative http POST requests to the Police API (https://data.police.uk/api/stops-street?). There are two components within each POST request: the date (month and year) and character string of longitudes and latitudes that describe a polygon (i.e., a Local Authority District). The polygon data is drawn from an in-built coordinate list called 'coords' which the user can call directly or assign to an R object. This list is based on 2021 Local Authority District boundary data acquired from the Office for National Statistics Open Geography Portal (https://geoportal.statistics.gov.uk/), which were combined with two lookups from the same source: (1) a lookup to match LADs to Counties, Regions, and Countries and (2) a lookup to match LADs to Police Force Areas. The resultant list thus contains an element for each LAD in the UK, within which are sub-elements corresponding to the LAD's coordinates, county, region, country, and Police Force. 
 
 ## Example usage <a name="examples"></a>
 
