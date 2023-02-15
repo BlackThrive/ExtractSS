@@ -1,0 +1,29 @@
+variable,class,description
+index,integer,The position of the local authority in the coordinate list used for extraction. Mainly used for debugging to check what index the code got to before it broke.
+la_name,character,The name of the Local Authority District where the stop occurred
+la_code,character,The code of the Local Authority District where the stop occurred
+county,character,The county where the stop occurred
+region,character,The region where the stop occurred
+country,character,The country where the stop occurred
+force,character,The name of the Police Force that serves the area where the stop occurred
+date,Date,The date of the stop
+time,character,"The time of the stop.  Note that some forces only provide dates for their stop and searches, so you might see a disproportionate number of incidents occuring at midnight."
+age_range,character,The age range of the person stopped at the time the stop occurred
+gender,character,The gender of the person stopped 
+self_defined_ethnicity,character,"The ethnicity of the person stopped, as reported by the person stopped"
+officer_defined_ethnicity,character,"The ethnicity of the person stopped, as reported by the officer"
+object_of_search,character,What was searched for
+legislation,character,The power used to carry out the stop and search
+outcome,character,"The outcome of the stop. false if nothing was found, an empty string if no outcome was provided."
+location.longitude,character,Approximate longitude of where the stop was made. This is an anonymised - see https://data.police.uk/about/#location-anonymisation
+location.latitude,character,Approximate latitude of where the stop was made. This is an anonymised - see https://data.police.uk/about/#location-anonymisation
+location.street.id,character,Unique identifier for the location. This is an anonymised - see https://data.police.uk/about/#location-anonymisation
+location.street.name,character,Name of the location. This is an anonymised - see https://data.police.uk/about/#location-anonymisation
+involved_person,character,Whether a person was searched in this incident (derived from type; true if anything but 'Vehicle search')
+outcome_linked_to_object_of_search,character,"Whether the outcome was related to the reason the stop and search was carried out, as a boolean value (or null if not provided)"
+removal_of_more_than_outer_clothing,character,"Whether the person searched had more than their outer clothing removed, as a boolean value (or null if not provided)"
+type,character,"Whether this was a 'Person search', a 'Vehicle search', or a 'Person and Vehicle search'"
+coord_set,integer,"The coordinate subset of the LAD for this stop. Some LADs are comprised of multiple polygons (e.g., areas with islands), which are searched independently."
+operation,character,Whether this stop and search was part of a policing operation
+number_months_acquired,numeric,The number of months of stop records acquired for this LAD. Some months for some areas may not have recorded data. This variable tracks how many months have been acquired for this LAD.
+proportion_months_acquired,numeric,The number of months of stop records acquired for this LAD as a proportion of the total number of months requested. Some months for some areas may not have recorded data. This variable tracks what proportion of the requested months have been acquired for this LAD.
