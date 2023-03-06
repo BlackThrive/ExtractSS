@@ -1,6 +1,34 @@
 # v2 has mixed black categories factored into black
 
-analyse_records_2 <- function(data_file,
+#' Analyse stop and search records
+#'
+#' This function allows users to quickly calculate stop and search summary statistics
+#' by ethnicity, geography and time. The statistics calculated include the stop rates
+#' for each of the two specified ethnicity as well as the odds and relative risk
+#' ratios between these two rates (aka "disproportionality").
+#'
+#' NOTE: Ethnicity categories are aggregated in this function to broad categories
+#' ("Asian", "Black", "White", "Mixed","Other"). The Black category includes multiple
+#' ethnicities that include Black (e.g. "White and Black Caribbean").
+#'
+#' @param data_file The data to be summarised. Can be an already-loaded R object
+#' or a .csv file.
+#' @param geography Geographic unit of analysis. "la" to analyse by local
+#' authority district, "region" to analyse by Government Office Region.
+#' @param ethnicity_definition Specifies either either self-defined ("self") or
+#' officer-defined ("officer") ethnicity.
+#' @param comparison Specify the ethnicity categories to compare. First specified
+#' is the reference/comparison category
+#' @param date Specify time periods for analysis. "by_year" will calculate statistics
+#' for each calendar year. "by_month" will calculate each month separately.
+#' "12_month_periods" will calculate statistics for each twelve months available
+#' in the data from the most recent data.
+#'
+#' @return A dataframe containing statistics according to the specification
+#' @export
+#'
+#' @examples
+analyse_ss_records <- function(data_file,
                             geography = c("la","region"),
                             ethnicity_definition = c("self","officer"),
                             comparison = c("White","Black"),
