@@ -25,7 +25,7 @@
 #' @param max_tries Specify the maximum number of times to retry a failed
 #' POST request. Numeric value. Default is 10. Failures are usually due to
 #' timeouts, which are often resolved by retrying, but can also be because there
-#' is no data avaible for the area/date combination.
+#' is no data available for the area/date combination.
 #'
 #' @return A list containing three elements.
 #' * result: This is the data frame containing the acquired stop records.
