@@ -1,5 +1,3 @@
-# v2 has mixed black categories factored into black
-
 #' Analyse stop and search records
 #'
 #' This function allows users to quickly calculate stop and search summary statistics
