@@ -3,3 +3,4 @@
 ^workings$
 ^load_coords\.R$
 ^load_coords_2\.R$
+^\./data/extractss_data_dictionary\.csv$
