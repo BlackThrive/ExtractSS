@@ -19,10 +19,10 @@ location.longitude,character,Approximate longitude of where the stop was made. T
 location.latitude,character,Approximate latitude of where the stop was made. This is an anonymised - see https://data.police.uk/about/#location-anonymisation
 location.street.id,character,Unique identifier for the location. This is an anonymised - see https://data.police.uk/about/#location-anonymisation
 location.street.name,character,Name of the location. This is an anonymised - see https://data.police.uk/about/#location-anonymisation
-involved_person,character,Whether a person was searched in this incident (derived from type; true if anything but 'Vehicle search')
+involved_person,character,Whether a person was searched in this incident (derived from type; true if anything but Vehicle search)
 outcome_linked_to_object_of_search,character,"Whether the outcome was related to the reason the stop and search was carried out, as a boolean value (or null if not provided)"
 removal_of_more_than_outer_clothing,character,"Whether the person searched had more than their outer clothing removed, as a boolean value (or null if not provided)"
-type,character,"Whether this was a 'Person search', a 'Vehicle search', or a 'Person and Vehicle search'"
+type,character,"Whether this was a Person search, a Vehicle search, or a Person and Vehicle search"
 coord_set,integer,"The coordinate subset of the LAD for this stop. Some LADs are comprised of multiple polygons (e.g., areas with islands), which are searched independently."
 operation,character,Whether this stop and search was part of a policing operation
 number_months_acquired,numeric,The number of months of stop records acquired for this LAD. Some months for some areas may not have recorded data. This variable tracks how many months have been acquired for this LAD.
