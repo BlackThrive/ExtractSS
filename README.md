@@ -58,7 +58,7 @@ lapply(pkg_not_install, install.packages, dependencies = TRUE)
 lapply(packages, library, character.only = TRUE)
 
 # install extractss
-devtools::install_github(“BlackThrive/extractss”)
+devtools::install_github("BlackThrive/extractss")
 
 # don't forget to add extractss to library
 library(extractss)
@@ -84,12 +84,12 @@ extraction <- extract_ss_data(coords)
 In most cases, missing_entries and server_errors will be empty. The user can coerce the ‘result’ list element to a data frame using: 
 
 ```R
-extraction_df <- extraction[[“result”]]
+extraction_df <- extraction[["result"]]
 ```
 This dataframe can then be saved, e.g.:
 ```
-write.csv(extraction_df, file = “inpath/filename.csv”)
-saveRDS(extraction_df, file = “inpath/filename.Rds”) 
+write.csv(extraction_df, file = "inpath/filename.csv")
+saveRDS(extraction_df, file = "inpath/filename.Rds") 
 ```
 
 **NOTE**: Because extraction can take a long time depending on the user's needs, it may be preferable to make use of the various other utility functions to better define the extraction parameters, such as the areas and time period of interest. 
@@ -120,15 +120,15 @@ Other possible examples for subsetting to different areas are provided below
 
 ```R
 # get coords for just Lambeth, Haringey, and Birmingham, then extract SS records
-lam_har_birm_coords <- subset_coords(coords, la = c(“Lambeth”, “Haringey”, “Birmingham”))
+lam_har_birm_coords <- subset_coords(coords, la = c("Lambeth", "Haringey", "Birmingham"))
 lam_har_birm_extraction <- extract_ss_data(lam_har_birm_coords)
 
 # get coords for just the London region and extract SS records
-london_coords <- subset_coord(coords, region = “London”)
+london_coords <- subset_coord(coords, region = "London")
 lon_extraction <- extract_ss_data(london_coords)
 
 # It is also possible to subset to specific Police Force, e.g.
-met_coords <- subset_coord(coords, force = “Metropolitan Police”)
+met_coords <- subset_coord(coords, force = "Metropolitan Police")
 met_extraction <- extract_ss_data(met_coords)
 ```
 
