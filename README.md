@@ -1,4 +1,4 @@
-# extractss
+# ExtractSS
 
 [![DOI](https://zenodo.org/badge/550877302.svg)](https://zenodo.org/badge/latestdoi/550877302)
 
