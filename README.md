@@ -1,5 +1,7 @@
 # extractss
 
+[![DOI](https://zenodo.org/badge/550877302.svg)](https://zenodo.org/badge/latestdoi/550877302)
+
 A package for facilitating research on stop and search in the UK by making up-to-date stop and search data more accessible and usable.
 
 # Table of contents
