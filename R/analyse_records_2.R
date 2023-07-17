@@ -44,12 +44,12 @@ analyse_ss_records <- function(data_file,
   # load population estimates
   # new pop ests from census 2021: https://www.ons.gov.uk/datasets/TS021/editions/2021/versions/1
   if(geography == "la"){
-    population_ests <- read.csv("./data/la_pop_estimates_2021_2.csv")
-    population_ests <- population_ests %>%
+    population_ests <- read.csv("./data/census_2021_pop_ests_collapsed.csv")
+    population_ests <- population_ests# %>%
       # translate ONS missing estimate characters to NAs
-      dplyr::mutate(across(ncol(population_ests)), dplyr::na_if(., "!")) %>%
-      dplyr::mutate(across(ncol(population_ests)), dplyr::na_if(., "-")) %>%
-      dplyr::mutate(across(ncol(population_ests)), dplyr::na_if(., "~"))
+      # dplyr::mutate(across(ncol(population_ests)), dplyr::na_if(., "!")) %>%
+      # dplyr::mutate(across(ncol(population_ests)), dplyr::na_if(., "-")) %>%
+      # dplyr::mutate(across(ncol(population_ests)), dplyr::na_if(., "~"))
   }
   else if(geography == "region"){
     population_ests <- read.csv("./data/census2011_pop_ests_by_ethn_region.csv")
