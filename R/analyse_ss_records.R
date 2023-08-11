@@ -1,9 +1,12 @@
-# Calculates stop rates and disproportionality for each borough for each year 2019-2021
+# Calculates stop rates and disproportionality for each local authority for each year 2019-2021
 
 rm(list = ls())
 library(tidyverse)
+source("./R/riskratio_from_df.R")
 
 data <- read_csv("./data/data_36_months_to_dec_21.csv")
+
+comparison <- c("White","Mixed_Other")
 
 data <- data %>%
   subset(., country != "Northern Ireland" & country != "Scotland")
@@ -13,7 +16,8 @@ data$region[data$country == "Wales"] <- "Wales"
 
 # load population estimates
 # new pop ests from census 2021: https://www.ons.gov.uk/datasets/TS021/editions/2021/versions/1
-population_ests <- read.csv("./data/census_2021_pop_ests_collapsed.csv")
+population_ests <- read.csv("./data/census_2021_pop_ests_aggregated_mixed_incl.csv")
+
 population_ests <- population_ests #%>%
   # # translate ONS missing estimate characters to NAs
   # dplyr::mutate(across(ncol(population_ests)), dplyr::na_if(., "!")) %>%
@@ -26,6 +30,7 @@ data$region[which(data$country == "Wales")] <- "Wales"
 #data$region[which(data$country == "Scotland")] <- "Scotland"
 
 # collapse self-defined ethnicity (not necessary for officer-defined)
+# here we create more meaningful aggregated mixed categories
 data$self_defined_ethnicity <- as.factor(data$self_defined_ethnicity)
 data$self_defined_ethnicity <-
   forcats::fct_collapse(data$self_defined_ethnicity,
@@ -36,11 +41,11 @@ data$self_defined_ethnicity <-
                                   "Asian/Asian British - Pakistani"),
                         Black = c("Black/African/Caribbean/Black British - African",
                                   "Black/African/Caribbean/Black British - Any other Black/African/Caribbean background",
-                                  "Black/African/Caribbean/Black British - Caribbean",
-                                  "Mixed/Multiple ethnic groups - White and Black African", # have included mixed in Black category
-                                  "Mixed/Multiple ethnic groups - White and Black Caribbean"),
-                        Mixed = c("Mixed/Multiple ethnic groups - Any other Mixed/Multiple ethnic background",
-                                  "Mixed/Multiple ethnic groups - White and Asian"),
+                                  "Black/African/Caribbean/Black British - Caribbean"),
+                        Mixed_Black = c("Mixed/Multiple ethnic groups - White and Black African",
+                                        "Mixed/Multiple ethnic groups - White and Black Caribbean"),
+                        Mixed_Asian = c("Mixed/Multiple ethnic groups - White and Asian"),
+                        Mixed_Other = c("Mixed/Multiple ethnic groups - Any other Mixed/Multiple ethnic background"),
                         Other = c("Other ethnic group - Any other ethnic group",
                                   "Other ethnic group - Not stated"),
                         White = c("White - Any other White background",
@@ -54,13 +59,13 @@ data <- data %>%
     ethnicity = self_defined_ethnicity
   )
 
-ethnicity_1 <- "White"
-ethnicity_2 <- "Black"
+ethnicity_1 <- comparison[1]
+ethnicity_2 <- comparison[2]
 
 # subset to ethnicities to compare
 data_subset <- subset(data, ethnicity == ethnicity_1 | ethnicity == ethnicity_2)
 # refactor. First in comparison is reference, second is treatment
-data_subset$ethnicity <- factor(data_subset$ethnicity, levels = c("White","Black"))
+data_subset$ethnicity <- factor(data_subset$ethnicity, levels = comparison)
 
 # separate date into separate columns
 data_subset$year <- as.numeric(substr(data_subset$date, 1, 4))
@@ -313,5 +318,5 @@ combined <- left_join(all_results, lookup[,c("LAD22CD","PFA22CD")],
     force_code = PFA22CD
   )
 
-write_csv(combined, file = paste0("./data/",Sys.Date(), " - summarised_stops_2019-2021.csv"))
+write_csv(combined, file = paste0("./data/",Sys.Date(), " - ", ethnicity_2, "_summarised_stops_2019-2021.csv"))
 # saveRDS(all_results, file = "./data/london_summarised_stats_la_by_year.rds")
