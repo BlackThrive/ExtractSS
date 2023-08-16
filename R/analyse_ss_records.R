@@ -1,4 +1,5 @@
 # Calculates stop rates and disproportionality for each local authority for each year 2019-2021
+# Most recent as of 16/08/2023
 
 rm(list = ls())
 library(tidyverse)
@@ -47,7 +48,9 @@ data$self_defined_ethnicity <-
                         Mixed_Asian = c("Mixed/Multiple ethnic groups - White and Asian"),
                         Mixed_Other = c("Mixed/Multiple ethnic groups - Any other Mixed/Multiple ethnic background"),
                         Other = c("Other ethnic group - Any other ethnic group",
-                                  "Other ethnic group - Not stated"),
+                                  "Other ethnic group - Arab",
+                                  "Other ethnic group - Not stated",
+                                  "White - Gypsy or Irish Traveller"),
                         White = c("White - Any other White background",
                                   "White - English/Welsh/Scottish/Northern Irish/British",
                                   "White - Irish")
