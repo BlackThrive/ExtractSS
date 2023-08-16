@@ -153,7 +153,9 @@ summarise_stops <- function(data,
                                                                   "Mixed/Multiple ethnic groups - White and Black Caribbean"),
                                                   Mixed_Other = c("Mixed/Multiple ethnic groups - Any other Mixed/Multiple ethnic background"),
                                                   Other = c("Other ethnic group - Any other ethnic group",
-                                                            "Other ethnic group - Not stated"),
+                                                            "Other ethnic group - Arab",
+                                                            "Other ethnic group - Not stated",
+                                                            "White - Gypsy or Irish Traveller"),
                                                   White = c("White - Any other White background",
                                                             "White - English/Welsh/Scottish/Northern Irish/British",
                                                             "White - Irish")
@@ -180,7 +182,9 @@ summarise_stops <- function(data,
                                                                 "Mixed/Multiple ethnic groups - White and Black Caribbean"),
                                                 Mixed_Other = c("Mixed/Multiple ethnic groups - Any other Mixed/Multiple ethnic background"),
                                                 Other = c("Other ethnic group - Any other ethnic group",
-                                                          "Other ethnic group - Not stated"),
+                                                          "Other ethnic group - Arab",
+                                                          "Other ethnic group - Not stated",
+                                                          "White - Gypsy or Irish Traveller"),
                                                 White = c("White - Any other White background",
                                                           "White - English/Welsh/Scottish/Northern Irish/British",
                                                           "White - Irish")
@@ -218,6 +222,8 @@ summarise_stops <- function(data,
           )
       }
     }
+
+
 
     ### 2.1.1 Plots ###
 
@@ -305,7 +311,9 @@ summarise_stops <- function(data,
                                                                   "Mixed/Multiple ethnic groups - White and Black Caribbean"),
                                                   Mixed_Other = c("Mixed/Multiple ethnic groups - Any other Mixed/Multiple ethnic background"),
                                                   Other = c("Other ethnic group - Any other ethnic group",
-                                                            "Other ethnic group - Not stated"),
+                                                            "Other ethnic group - Arab",
+                                                            "Other ethnic group - Not stated",
+                                                            "White - Gypsy or Irish Traveller"),
                                                   White = c("White - Any other White background",
                                                             "White - English/Welsh/Scottish/Northern Irish/British",
                                                             "White - Irish")
@@ -332,7 +340,9 @@ summarise_stops <- function(data,
                                                                 "Mixed/Multiple ethnic groups - White and Black Caribbean"),
                                                 Mixed_Other = c("Mixed/Multiple ethnic groups - Any other Mixed/Multiple ethnic background"),
                                                 Other = c("Other ethnic group - Any other ethnic group",
-                                                          "Other ethnic group - Not stated"),
+                                                          "Other ethnic group - Arab",
+                                                          "Other ethnic group - Not stated",
+                                                          "White - Gypsy or Irish Traveller"),
                                                 White = c("White - Any other White background",
                                                           "White - English/Welsh/Scottish/Northern Irish/British",
                                                           "White - Irish")
@@ -421,9 +431,8 @@ summarise_stops <- function(data,
   }
 
   # clear up year column name
-  if(by_year == T){
-    colnames(summary_tab)[1] <- "year"
-  }
+  names(summary_tab) <- sub('if \\(by_year == T\\)','', names(summary_tab))
+  names(summary_tab) <- sub('if \\(area_type == "la"\\)','', names(summary_tab))
 
   # return the summarised tibble
   return(summary_tab)
