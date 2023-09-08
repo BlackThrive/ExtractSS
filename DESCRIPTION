@@ -1,6 +1,6 @@
 Package: ExtractSS
-Title: A package for facilitating research on stop and search in England and Wales.
-Version: 0.0.0.9000
+Title: ExtractSS: A package for facilitating research on stop and search in England and Wales.
+Version: 1.2
 Authors@R: 
     person("Jolyon", "Miles-Wilson", , "jolyon.miles-wilson@blackthrive.org", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-3789-0345"))
