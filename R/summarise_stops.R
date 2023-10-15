@@ -201,11 +201,11 @@ summarise_stops <- function(data,
       # i.e., "18% of stops of for controlled drugs are stops of Asians"
       if(metric_by_ethnicity == T){
         summary_tab <- data %>%
-          group_by(if(by_year == T) year, {{ metric }}, ethnicity) %>% # ethnicity within reason
-          summarise(
+          dplyr::group_by(if(by_year == T) year, {{ metric }}, ethnicity) %>% # ethnicity within reason
+          dplyr::summarise(
             frequency = n()
           ) %>%
-          mutate(
+          dplyr::mutate(
             percentage = 100 * (frequency / sum(frequency))
           )
 
@@ -213,11 +213,11 @@ summarise_stops <- function(data,
       # i.e., "74% of stops of Asians are for controlled drugs"
       }else{
         summary_tab <- data %>%
-          group_by(if(by_year == T) year, ethnicity, {{ metric }}) %>% # reason within ethnicity
-          summarise(
+          dplyr::group_by(if(by_year == T) year, ethnicity, {{ metric }}) %>% # reason within ethnicity
+          dplyr::summarise(
             frequency = n()
           ) %>%
-          mutate(
+          dplyr::mutate(
             percentage = 100 * (frequency / sum(frequency))
           )
       }
@@ -360,7 +360,7 @@ summarise_stops <- function(data,
       if(metric_by_ethnicity == TRUE){
         summary_tab <- data %>%
           # ethnicity within reason
-          group_by(if(by_year == T) year,
+          dplyr::group_by(if(by_year == T) year,
                    {{ area_name }},
                    # if(area_type == "la") {{ area_code }},
                    if(area_type == "la") county,
@@ -370,10 +370,10 @@ summarise_stops <- function(data,
                    {{ metric }},
                    ethnicity) %>%
 
-          summarise(
+          dplyr::summarise(
             frequency = n()
           ) %>%
-          mutate(
+          dplyr::mutate(
             percentage = 100 * (frequency / sum(frequency))
           )
 
@@ -382,7 +382,7 @@ summarise_stops <- function(data,
       }else{
         summary_tab <- data %>%
           # reason within ethnicity
-          group_by(if(by_year == T) year,
+          dplyr::group_by(if(by_year == T) year,
                    {{ area_name }},
                    # if(area_type == "la") {{ area_code }},
                    if(area_type == "la") county,
@@ -392,10 +392,10 @@ summarise_stops <- function(data,
                    ethnicity,
                    {{ metric }}) %>%
 
-          summarise(
+          dplyr::summarise(
             frequency = n()
           ) %>%
-          mutate(
+          dplyr::mutate(
             percentage = 100 * (frequency / sum(frequency))
           )
       }
