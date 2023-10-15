@@ -230,7 +230,7 @@ summarise_stops <- function(data,
     if(plot == TRUE){
 
       if(by_ethnicity == TRUE){
-        summary_plot <- ggplot(summary_tab,
+        summary_plot <- ggplot2::ggplot(summary_tab,
                                aes(x = if(metric_by_ethnicity == T) {{ metric }} else ethnicity,
                                    y = percentage,
                                    fill = if(metric_by_ethnicity == T) ethnicity else {{ metric }})) + # if by_ethnicity is T add fill
@@ -246,7 +246,7 @@ summarise_stops <- function(data,
             geom_label(aes(label = frequency))
           }
       }else{
-        summary_plot <- ggplot(summary_tab, aes(x = {{ metric }}, y = percentage)) +
+        summary_plot <- ggplot2::ggplot(summary_tab, aes(x = {{ metric }}, y = percentage)) +
           geom_col(colour = "black", position = "dodge2") +
           xlab("Object of search") + ylab("Percentage of stops (within group)") +
           ggtitle(paste0("Percentage of stops by ",metric_string)) +
