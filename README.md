@@ -50,7 +50,7 @@ lapply(packages, library, character.only = TRUE)
 installr::install.Rtools()
 ```
 
-Once Rtools is installed, use the 'devtools' package to install extractss
+Once Rtools is installed, use the 'devtools' package to install ExtractSS
 
 ```R
 # check if you already have devtools installed and install if not.
@@ -60,10 +60,10 @@ lapply(pkg_not_install, install.packages, dependencies = TRUE)
 lapply(packages, library, character.only = TRUE)
 
 # install extractss
-devtools::install_github("BlackThrive/extractss")
+devtools::install_github("BlackThrive/ExtractSS")
 
 # don't forget to add extractss to library
-library(extractss)
+library(ExtractSS)
 ```
 
 ## How it works <a name="how"></a>
